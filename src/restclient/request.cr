@@ -1,5 +1,5 @@
 require "tempfile"
-require "mime/types"
+require "mime"
 require "cgi"
 require "netrc"
 require "set"

@@ -17,7 +17,7 @@ module RestClient
     end
 
     def history
-      @history ||= request.redirection_history || []
+      @history ||= request.redirection_history || [] of String
     end
 
     # A hash of the headers, beautified with symbols and underscores.
@@ -42,7 +42,7 @@ module RestClient
 
     # Hash of cookies extracted from response headers
     def cookies
-      hash = {}
+      hash = {} of String => String
 
       cookie_jar.cookies.each do |cookie|
         hash[cookie.name] = cookie.value
@@ -59,7 +59,7 @@ module RestClient
       return @cookie_jar if @cookie_jar
 
       jar = HTTP::CookieJar.new
-      headers.fetch(:set_cookie, []).each do |cookie|
+      headers.fetch(:set_cookie, [] of String).each do |cookie|
         jar.parse(cookie, @request.url)
       end
 
@@ -131,7 +131,7 @@ module RestClient
     # @return [Hash]
     #
     def self.beautify_headers(headers)
-      headers.inject({}) do |out, (key, value)|
+      headers.inject({} of String => String) do |out, key, value|
         key_sym = key.gsub(/-/, "_").downcase.to_sym
 
         # Handle Set-Cookie specially since it cannot be joined by comma.
@@ -145,15 +145,13 @@ module RestClient
       end
     end
 
-    private
-
     # Follow a redirection
     #
     # @param new_args [Hash] Start with this hash of arguments for the
     #   redirection request. The hash will be mutated, so be sure to dup any
     #   existing hash that should not be modified.
     #
-    def _follow_redirection(new_args, &block)
+    private def _follow_redirection(new_args, &block)
 
       # parse location header and merge into existing URL
       url = headers[:location]
@@ -187,7 +185,7 @@ module RestClient
       new_req.execute(&block)
     end
 
-    def exception_with_response
+    private def exception_with_response
       begin
         klass = Exceptions::EXCEPTIONS_MAP.fetch(code)
       rescue KeyError
