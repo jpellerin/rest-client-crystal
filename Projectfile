@@ -1,2 +1,4 @@
 deps do
+  github "spalger/crystal-mime"
+  github "jpellerin/netrc-crystal"
 end
